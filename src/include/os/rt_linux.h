@@ -58,6 +58,10 @@
 #include <linux/pid.h>
 #endif
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+#include <linux/sched/signal.h>
+#endif
+
 #ifdef RT_CFG80211_SUPPORT
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,28))
 #include <net/mac80211.h>
@@ -308,8 +312,13 @@ typedef struct file* RTMP_OS_FD;
 
 typedef struct _OS_FS_INFO_
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+	kuid_t				fsuid;
+	kuid_t				fsgid;
+#else
 	int				fsuid;
 	int				fsgid;
+#endif
 	mm_segment_t	fs;
 } OS_FS_INFO;
 

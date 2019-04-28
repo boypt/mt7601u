@@ -1161,9 +1161,14 @@ void RtmpOSFileSeek(RTMP_OS_FD osfd, int offset)
 
 int RtmpOSFileRead(RTMP_OS_FD osfd, char *pDataPtr, int readLen)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+	if (osfd->f_op) {
+		return kernel_read(osfd, pDataPtr, readLen, &osfd->f_pos);
+#else
 	/* The object must have a read method */
 	if (osfd->f_op && osfd->f_op->read) {
 		return osfd->f_op->read(osfd, pDataPtr, readLen, &osfd->f_pos);
+#endif
 	} else {
 		DBGPRINT(RT_DEBUG_ERROR, ("no file read method\n"));
 		return -1;
@@ -1184,6 +1189,9 @@ static inline void __RtmpOSFSInfoChange(OS_FS_INFO * pOSFSInfo, BOOLEAN bSet)
 		pOSFSInfo->fsuid = current->fsuid;
 		pOSFSInfo->fsgid = current->fsgid;
 		current->fsuid = current->fsgid = 0;
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+		pOSFSInfo->fsuid = *(kuid_t*)&current_fsuid();
+		pOSFSInfo->fsgid = *(kuid_t*)&current_fsgid();
 #else
 		pOSFSInfo->fsuid = *(int*)&current_fsuid();
 		pOSFSInfo->fsgid = *(int*)&current_fsgid();
