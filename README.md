@@ -37,6 +37,16 @@ Or
 ./build.sh
 ```
 
+Crossing Building
+=======
+```
+# pwd => /home/ubuntu/Workdir/linux
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- scripts
+
+# cd ../mt7601u
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LINUX_SRC=/home/ubuntu/Workdir/linux
+```
+
 Test Driver
 =======
 Load the driver
