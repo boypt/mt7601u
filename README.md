@@ -25,18 +25,6 @@ CentOS/Redhat/Fedora user can run below commands to install the dependencies
 yum install -y git wget gcc make kernel-devel
 ```
 
-Fetch source code
-```Bash
-cd ~ && git clone https://github.com/terence-deng/mt7601u.git
-```
-
-Fetch mt7601u.bin
-```Bash
-cd ~/mt7601u && mkdir -p src/mcu/bin && \
-wget -c 'http://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/plain/mt7601u.bin' \
--O 'src/mcu/bin/MT7601.bin'
-```
-
 Build Driver
 =======
 Start build
@@ -55,6 +43,8 @@ Load the driver
 ```Bash
 ./load.sh
 ```
+
+Or copy all 3 .ko files to `/lib/modules/(kernel version)/`, then run `depmod -a`, the module will auto-loaded on inserting the usb dongle.
 
 Unload the driver
 ```Bash
